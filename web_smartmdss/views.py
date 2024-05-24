@@ -264,8 +264,9 @@ def get_weather_data(request, point_id):
         lat, lon = str(point_data['latitude']), str(point_data['longitude'])
         # print (type(lat), type(lon))
         # Fetch traffic data
+        #t5YquvDYfcgWQJiLPRXyYOOngoP84PDm
         resp_tf = requests.get(
-            f"https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/xml?key=t5YquvDYfcgWQJiLPRXyYOOngoP84PDm&point={lat},{lon}&unit=mph")
+            f"https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/xml?key=keyyyyyy&point={lat},{lon}&unit=mph")
         soup = BeautifulSoup(resp_tf.text, "lxml-xml")
         print ("resp_tf", resp_tf)
         # Parse traffic data
