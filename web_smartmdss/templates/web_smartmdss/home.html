@@ -1,0 +1,410 @@
+<head>
+
+    {% load static %}
+
+
+    <!-- Load Chart.js -->
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Include Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load date-fns for date handling -->
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.x/dist/date-fns.min.js"></script>
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+        .container {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: flex-start; /* Align items from the top */
+        flex-wrap: wrap; /* Allows items to wrap as needed */
+        gap: 10px; /* Spacing between items */
+    }
+    .chart-container {
+        flex: 1 1 30%; /* Flex-grow, flex-shrink, and flex-basis */
+        padding: 10px;
+        box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+    }
+
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+    table {
+        width: 50%; /* Ensures the table uses the full width of its container */
+    }
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    #map {
+        position: relative; /* Parent container needs to be positioned */
+        height: 400px;
+    }
+    #trafficInfo {
+        position: absolute; /* Positioned absolutely relative to its nearest positioned ancestor */
+        top: 10px; /* Distance from the top of the map */
+        right: 10px; /* Distance from the right side of the map */
+        background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+        padding: 10px;
+        border-radius: 5px; /* Optional: rounded corners */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Optional: adds shadow for better visibility */
+        display: none; /* Start hidden, show via JavaScript */
+         z-index: 1000;
+    }
+</style>
+</head>
+<body>
+
+    {% include 'web_smartmdss/_navbar.html' %}
+
+    <div id="map">
+        <div id="trafficInfo">
+        <table>
+            <tr>
+                <th>Current Speed</th>
+                <th>Maximum Speed</th>
+                <th>Road Closure</th>
+            </tr>
+            <tr>
+                <td id="currentSpeed"></td>
+                <td id="maxSpeed"></td>
+                <td id="roadClosure"></td>
+            </tr>
+        </table>
+    </div>
+
+    </div>
+<div class="container">
+
+    <div class="chart-container">
+        <canvas id="weatherChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="NoInterventionChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="maintenanceChart"></canvas>
+    </div>
+</div>
+
+   <script>
+    var map = L.map('map').setView([43.8283, -95.5795], 4);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function createMarker(lat, lng, type, roadName, pointId) {
+        console.log("Marker clicked, Point ID 1:", pointId);
+
+        var markerColor;
+            if (roadName.startsWith('MichiganCOUNTY')) {
+                markerColor = 'green'; // Set to green if roadName starts with MichiganCOUNTY
+            } else {
+                markerColor = type === 'user' ? 'red' : 'blue';
+            }
+        var markerIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + markerColor + '.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+        var marker = L.marker([lat, lng], {icon: markerIcon});
+        marker.bindTooltip(roadName);
+        marker.on('click', function() {
+            console.log("Marker clicked, Point ID: 2", pointId); // Debugging to see the pointId
+            onMarkerClick(pointId);
+        });
+        marker.addTo(map);
+        return marker;
+    }
+
+    function addPointsToMap(pointsJson, fitBounds, pointType) {
+        var points = JSON.parse(pointsJson);
+        var bounds = L.latLngBounds();
+        points.forEach(function(point) {
+            var pointId = point._id.$oid;
+        var marker = createMarker(point.latitude, point.longitude, pointType, point.road_name, pointId);
+        bounds.extend(marker.getLatLng());
+    });
+    if (fitBounds && points.length > 0) {
+        map.fitBounds(bounds);
+    }
+    }
+
+    {% if shared_points %}
+    addPointsToMap('{{ shared_points|safe }}', false, 'shareable');
+    {% endif %}
+
+    {% if user.is_authenticated and user_points %}
+    addPointsToMap('{{ user_points|safe }}', true, 'user');
+    {% endif %}
+
+    function onMarkerClick(pointId) {
+            axios.get('/get-weather-data/' + pointId).then(function (response) {
+
+                const data = response.data;
+                try {
+                    updateTemperatureChart(data.times, data.temperatures, data.surface_temperatures, data.snow);
+                } catch (error) {
+                    console.error('Error in updateTemperatureChart:', error);
+                }
+                try {
+                    updateNoInterventionChart(data.maintenance_times_Nointrvention, data.water_Nointrvention, data.ice_Nointrvention, data.salt_Nointrvention, data.snow_Nointrvention);
+                } catch (error) {
+                    console.error('Error in updateNoInterventionChart:', error);
+                }
+                try {
+                    updateMaintenanceChart(data.maintenance_times, data.water, data.ice, data.salt, data.snow_withintervention, data.actions_);
+                } catch (error) {
+                    console.error('Error in updateMaintenanceChart:', error);
+                }
+
+                // Display traffic info
+                document.getElementById('trafficInfo').style.display = 'block';
+                document.getElementById('currentSpeed').textContent = data.traffic.current_speed;
+                document.getElementById('maxSpeed').textContent = data.traffic.max_speed;
+                document.getElementById('roadClosure').textContent = data.traffic.road_closure;
+
+            }).catch(function (error) {
+                console.error('Error fetching data:', error);
+            });
+        }
+        function convertToInches(value, density) {
+                // Convert grams per cubic meter to cubic meters (g/m³ to m³) using density (g/m³ / kg/m³ = m³)
+                let volumeM3 = value / 1000 / density;  // Convert to kilograms then to m³
+                let volumeInCubicInches = volumeM3 * 61023.7441;  // Convert cubic meters to cubic inches
+                return volumeInCubicInches / 1440;  // Convert cubic inches to inches over a square meter (1 m² = 1440 in²)
+            }
+        function findMaxY(water, ice, snow, defaultMax) {
+            const allValues = water.concat(ice).concat(snow);
+            const calculatedMax = Math.max(...allValues);
+            return Math.max(calculatedMax, defaultMax);
+        }
+
+        function updateTemperatureChart(times, airTemps, surfaceTemps, snow_data) {
+
+            var ctx = document.getElementById('weatherChart').getContext('2d');
+
+            // Check if a chart instance already exists, if it does, destroy it
+            if (window.weatherChart && typeof window.weatherChart.destroy === 'function') {
+                window.weatherChart.destroy();
+            }
+                // Check if a chart instance already exists
+            // Debugging logs
+            // console.log("Times:", times);
+            // console.log("Air Temperatures:", airTemps);
+            // console.log("Surface Temperatures:", surfaceTemps);
+            // console.log("Snow Data:", snow_data);
+
+             window.weatherChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: 'Temperature',
+                            data: airTemps,
+                            borderColor: 'red',
+                            yAxisID: 'y-axis-1',
+                        }, {
+                            label: 'Surface Temperature',
+                            data: surfaceTemps,
+                            borderColor: 'green',
+                            yAxisID: 'y-axis-1',
+                        }, {
+                            label: 'SnowFall ',
+                            data: snow_data,
+                            borderColor: 'blue',
+                            yAxisID: 'y-axis-2',
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            'y-axis-1': {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                        display: true,
+                                        text: 'Temperature (°F)'
+                                    }
+                            },
+                            'y-axis-2': {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'SnowFall (inch/hr)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                }
+                            }
+                        },
+                        plugins: {
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        mode: 'vertical',
+                                        scaleID: 'x',
+                                        value: times[times.length - 47], // the label at the 48th last index
+                                        borderColor: 'black',
+                                        borderWidth: 2,
+                                        label: {
+                                            content: 'Now',
+                                            font: {
+                                                        size: 7, // Set the font size here
+                                                        family: 'Arial', // Optional: set the font family
+                                                        style: 'bold', // Optional: set the font style
+                                                    },
+                                            enabled: true,
+                                            position: 'top',
+                                            yAdjust: 60,
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+        function updateNoInterventionChart(maintenance_times, water, ice, salt, snow) {
+                if (maintenance_times.length === 0 || water.length === 0 || ice.length === 0 || salt.length === 0 || snow.length === 0) {
+                    if (window.NoInterventionChart && typeof window.NoInterventionChart.destroy === 'function') {
+                    window.NoInterventionChart.destroy();
+                }
+                // There is no data, so don't attempt to update the chart
+                console.log('No data for No Intervention Chart');
+                return;
+                }
+                var ctxSnow = document.getElementById('NoInterventionChart').getContext('2d');
+                if (window.NoInterventionChart && typeof window.NoInterventionChart.destroy === 'function') {
+                    window.NoInterventionChart.destroy();
+                }
+                var waterInches = water.map(w => convertToInches(w, 1000));
+                var iceInches = ice.map(i => convertToInches(i, 900));
+                var snowInches = snow.map(s => convertToInches(s, 100));
+                const Mx = 5;
+                var maxY = findMaxY(waterInches, iceInches, snowInches, Mx);
+                window.NoInterventionChart = new Chart(ctxSnow, {
+                    type: 'line',
+                    data: {
+                        labels: maintenance_times,
+                        datasets: [
+                            { label: 'Water Accumulation', data: waterInches, borderColor: 'aqua', borderWidth: 1 },
+                            { label: 'Ice Accumulation', data: iceInches, borderColor: 'lightblue', borderWidth: 1 },
+                            { label: 'Snow Accumulation', data: snowInches, borderColor: 'red', borderWidth: 1 }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {  title: { display: true, text: 'Inches' }, suggestedMax: maxY  },
+
+                        }
+                    }
+                });
+            }
+        function updateMaintenanceChart(maintenance_times, water, ice, salt, snow, actions) {
+        if (maintenance_times.length === 0 || water.length === 0 || ice.length === 0 || salt.length === 0 || snow.length === 0) {
+                if (window.maintenanceChart && typeof window.maintenanceChart.destroy === 'function') {
+                        window.maintenanceChart.destroy();
+                    }
+                // There is no data, so don't attempt to update the chart
+                console.log('No data for No MaintenanceChart Chart');
+                return;}
+            var ctxMnt = document.getElementById('maintenanceChart').getContext('2d');
+            if (window.maintenanceChart && typeof window.maintenanceChart.destroy === 'function') {
+                    window.maintenanceChart.destroy();
+                }
+            var waterInches = water.map(w => convertToInches(w, 1000));
+            var iceInches = ice.map(i => convertToInches(i, 900));
+            var snowInches = snow.map(s => convertToInches(s, 100));
+            const Mx = 5;
+            var maxY = findMaxY(waterInches, iceInches, snowInches, Mx);
+            var annotations = actions.map((action, index) => {
+                if (action !== '') {
+                    return {
+                        type: 'line',
+                        mode: 'vertical',
+                        scaleID: 'x',
+                        value: maintenance_times[index],
+                        borderColor: 'black',
+                        borderWidth: 2,
+
+                        label: {
+                            enabled: true,
+                            content: action,
+                            position: 'top',
+                            rotation :90,
+                            font: {
+                                size: 10, // Set the font size here
+                                family: 'Arial', // Optional: set the font family
+                                style: 'normal', // Optional: set the font style
+                                weight: 'bold', // Optional: set the font weight
+
+                            },
+                        }
+                    };
+                }
+            }).filter(annotation => annotation != null);
+
+            window.maintenanceChart = new Chart(ctxMnt, {
+                type: 'line',
+                data: {
+                    labels: maintenance_times,
+                    datasets: [
+                        { label: 'Water Accumulation', data: waterInches, borderColor: 'aqua', borderWidth: 1 },
+                        { label: 'Ice Accumulation', data: iceInches, borderColor: 'lightblue', borderWidth: 1 },
+                        { label: 'Salt Accumulation', data: salt, borderColor: 'yellow', borderWidth: 1, yAxisID: 'y1' },
+                        { label: 'Snow Accumulation', data: snowInches, borderColor: 'red', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Inches' }, suggestedMax: maxY , },
+                        y1: { type: 'linear', position: 'right', title: { display: true, text: 'Salt lb/mile/lane' } }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: annotations
+                        }
+                    }
+                }
+            });
+        }
+
+
+</script>
+<div id="trafficInfo" style="display: none;">
+    <table>
+        <tr>
+            <th>Current Speed</th>
+            <td id="currentSpeed"></td>
+        </tr>
+        <tr>
+            <th>Maximum Speed</th>
+            <td id="maxSpeed"></td>
+        </tr>
+        <tr>
+            <th>Road Closure</th>
+            <td id="roadClosure"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

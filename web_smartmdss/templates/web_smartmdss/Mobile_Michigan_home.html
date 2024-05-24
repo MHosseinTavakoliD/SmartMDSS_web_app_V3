@@ -1,0 +1,1043 @@
+
+
+<head>
+
+    {% load static %}
+
+  <title>MichiganMob</title>
+
+    <!-- Load Chart.js -->
+    <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Include Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Load date-fns for date handling -->
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.x/dist/date-fns.min.js"></script>
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column; /* Stack vertically by default */
+
+        }
+    #map {
+            width: 100%; /* Full width */
+            height: 50vh; /* Half of the viewport height */
+            z-index: 1;
+        }
+
+
+    /*#sidePanel {*/
+    /*        height: 100%; !* Remaining space for data *!*/
+    /*        overflow-y: auto; !* Add scroll if content overflows *!*/
+    /*    }*/
+
+
+    #ChartPanel {
+            position: relative; /* Absolute positioning to place it relative to #map */
+            top: 0; /* Adjust this value to position the container under the traffic table */
+            right: 10px; /* Right alignment to the map */
+            width: 100%; /* Set the width to 30% of the parent, adjust as necessary */
+            display: flex;
+            flex-direction: column; /* Stack children (charts) vertically */
+            align-items: center; /* Center the charts within the container */
+            gap: 10px; /* Spacing between each chart */
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            padding: 10px; /* Padding around the charts */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Shadow for better visibility */
+            z-index: 1003; /* Ensure it is above other map elements */
+        }
+
+    .chart-container {
+            width: 100%; /* Full width of the container */
+            display: none; /* Block display to fill the width of the container */
+            padding: 10px;
+            box-sizing: border-box; /* Include padding and border in the width calculation */
+        }
+
+    canvas {
+            width: 100% !important; /* Full width of the chart container */
+            height: auto !important; /* Maintain aspect ratio */
+            display: none;
+        }
+    table {
+        width: 100%; /* Ensures the table uses the full width of its container */
+        }
+    th, td {
+            text-align: left;
+            padding: 8px;
+        }
+    th {
+        background-color: #f2f2f2;
+        }
+
+    #sidePanel {
+        position: relative;
+        width: auto;
+
+        top: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        z-index: 1000;
+        display: none;
+    }
+    /* Add the new styles here */
+    #sidePanel table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+    #sidePanel th, #sidePanel td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    #sidePanel th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    #sidePanel tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+
+
+
+
+                #myModal {
+                      display: none; /* Hidden by default */
+                      position: fixed; /* Stay in place */
+                      z-index: 1005; /* Sit on top, over other elements */
+                      left: 0;
+                      top: 30%;
+                      width: 100%; /* Full width */
+                      height: 100%; /* Full height */
+                      overflow: auto; /* Enable scroll if needed */
+                      justify-content: center; /* Center horizontally */
+                      align-items: center; /* Center vertically */
+                        pointer-events: none;
+                    }
+
+                    .modal-content {
+                        pointer-events: auto;
+                      background-color: lightgray;
+                      padding: 20px;
+                      border-radius: 10px;
+                      border: 1px solid #888;
+                      width: 40%; /* Adjust width as needed */
+                      margin: auto; /* Centering the modal content */
+                    }
+                .user-selection {
+                      background-color: #f9f9f9;
+                      border: 1px solid #ddd;
+                      padding: 8px;
+                      margin-top: 4px;
+                    }
+
+                .close {
+                  color: #aaa;
+                  float: right;
+                  font-size: 28px;
+                  font-weight: bold;
+                }
+
+                .close:hover,
+                .close:focus {
+                  color: black;
+                  text-decoration: none;
+                  cursor: pointer;
+                }
+
+                .modal-buttons {
+                  text-align: right;
+                }
+
+                .modal-buttons button {
+                  margin-left: 10px;
+                }
+
+
+                /* Style for the popup content directly */
+                .leaflet-popup-content {
+                    font-size: 12px; /* Smaller text size */
+                    color: #333; /* Standard text color for better readability */
+                    max-width: 200px; /* Limit the width to make the popup smaller */
+                }
+
+                /* Style for images within the popup */
+                .leaflet-popup-content img {
+                    max-width: 100%; /* Full width of the popup but no more */
+                    height: auto; /* Maintain aspect ratio */
+                    margin-top: 5px; /* Space above the image */
+                }
+
+                /* Additional styles to adjust padding and margins within the popup */
+                .leaflet-popup-content-wrapper {
+                    padding: 5px; /* Smaller padding around the content */
+                }
+
+                .leaflet-popup-content p {
+                    margin: 2px 0; /* Smaller margins for paragraphs */
+                }
+
+
+
+
+
+</style>
+
+
+
+
+
+</head>
+<body>
+
+    {% include 'web_smartmdss/_navbar.html' %}
+    <div class="container" id="all_">
+        <div id="map"></div>
+
+        <div id="ChartPanel">
+
+            <div class="chart-container">
+                <canvas id="weatherChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="NoInterventionChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="maintenanceChart"></canvas>
+            </div>
+        </div>
+         <div id="sidePanel">
+            <table>
+                <tr><th>Location</th></tr>
+                <tr><td><strong>Name:</strong> <span id="roadName">NNNN</span></td></tr>
+                <tr><th>Winter Maintenance</th></tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>Your Recommendation: </strong>
+                        {% if user.is_authenticated %}
+                            <button id="addButton">Add</button>
+                            <div id="userSelection"></div>
+                        {% else %}
+                            Please login to provide feedback
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>AI Suggestion:</strong>
+                        <div style="text-align: center;" id="aiSuggestionContent"></div>
+                        <button onclick="toggleGraphVisibility()" style="margin-top: 10px; display: block; margin-left: auto; margin-right: auto;">Visualize Data</button>
+                    </td>
+                </tr>
+                <tr><th>Weather </th></tr>
+                <tr>
+                    <td>
+                        <table id="weatherForecastTable">
+                            <tr>
+                                <th>Time</th>
+                                <th>Temp F</th>
+                                <th>Humidity %</th>
+                                <th>Surface Temp F</th>
+                                <th>Wind Speed mph</th>
+                                <th>Description</th>
+                            </tr>
+                            <!-- Weather Data Rows will be dynamically inserted here -->
+                        </table>
+                    </td>
+                </tr>
+                <!-- Inserting Traffic Info Section -->
+                    <table>
+                    <tr><th colspan="6">Traffic</th></tr>
+                        <tr>
+                            <th colspan="2">Traffic Speed</th>
+                            <th>Max Speed</th>
+                            <th>Road Closure</th>
+                        </tr>
+                        <tr>
+                            <td colspan="2" id="currentSpeed"></td>
+                            <td id="maxSpeed"></td>
+                            <td id="roadClosure"></td>
+                        </tr>
+                    </table>
+
+            </div>
+        <!-- Road image modal  -->
+<!--        <div id="roadImageModal" class="modal">-->
+<!--                <div class="modal-content">-->
+<!--                    &lt;!&ndash;<span class="close" onclick="closeRoadImageModal(event)">&times;</span>&ndash;&gt;-->
+<!--                    <span class="close" onclick="closeRoadImageModal(event)">&times;</span>-->
+<!--                    <h4>The road surface is dry with 98% accuracy</h4>-->
+<!--                    <img src="{% static 'Road_img/Houghton.jpg' %}" alt="Road Image" style="width:100%;">-->
+<!--                </div>-->
+<!--            </div>-->
+
+        <!-- Modal -->
+                <div id="myModal" class="modal">
+                  <!-- Modal content -->
+                  <div class="modal-content">
+                    <span class="close" onclick="closeSuggestionModal(event)">&times;</span>
+                    <h2>Log a maintenance operation for route:</h2>
+                    <p>Select the time and type of operation you suggest</p>
+                        <form id="maintenanceForm" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" id="pointIdField" name="point_id" value="">
+
+                            <!-- Maintenance Operation Inputs -->
+                            <label for="date">Date:</label>
+                            <input type="date" id="date" name="date">
+
+                            <label for="time">Time:</label>
+                            <input type="time" id="time" name="time">
+
+                            <label for="type">Type:</label>
+                            <select id="type" name="type">
+                                <option value="" disabled selected>Select...</option>
+                                <option value="salting">Salting</option>
+                                <option value="plowing">Plowing</option>
+                            </select>
+
+                            <!-- User Suggestion Input -->
+                            <textarea name="userSuggestion" placeholder="Enter your suggestion here" style="width: 100%; height: 100px;"></textarea>
+
+                            <button type="submit" style="margin-top: 10px;">Submit</button>
+                        </form>
+                  </div>
+        </div>
+    </div>
+
+
+
+   <script>
+    var map = L.map('map').setView([44.73, -84.55], 7);
+    var currentRoadName = "";
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+
+    function getFontSize() {
+            if (window.innerWidth < 768) { // Assuming 768px as the breakpoint for mobile screens
+                return 8; // Smaller font size for mobile devices
+            } else {
+                return 16; // Larger font size for desktop
+            }
+        }
+    function createMarker(lat, lng, type, roadName, pointId) {
+        // console.log("Marker clicked, Point ID 1:", pointId);
+
+        var markerColor;
+            if (roadName.startsWith('MichiganCOUNTY')) {
+                markerColor = 'green'; // Set to green if roadName starts with MichiganCOUNTY
+            } else {
+                markerColor = type === 'user' ? 'red' : 'blue';
+            }
+        var markerIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-' + markerColor + '.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [15, 20],
+            iconAnchor: [5, 5],
+            popupAnchor: [1, -34],
+            shadowSize: [5, 5]
+        });
+        var marker = L.marker([lat, lng], {icon: markerIcon});
+        // marker.bindTooltip(roadName);
+        // marker.bindPopup(getPopupContent(roadName));
+        marker.on('click', function() {
+            console.log("Marker clicked, Point ID: 2", pointId); // Debugging to see the pointId
+            currentRoadName = roadName;  // Update the global variable
+            onMarkerClick(pointId, marker, currentRoadName); // Always call this to handle normal point data
+            //closeRoadImageModal()
+        });
+        marker.addTo(map);
+        return marker;
+    }
+    // function getPopupContent(roadName) {
+    //     if (roadName === "MichiganSTATE M-123 Chippewa County Go to @ LuceChippewa Co Line Traffic closest to camera is traveling North") {
+    //         return `<h4>The road surface is dry with 98% accuracy</h4><img src="{% static 'Road_img/Houghton.jpg' %}" alt="Road Image" style="width:30%;">`;
+    //     } else {
+    //         return `<h5>${roadName}</h5>`;
+    //     }
+    // }
+    function openRoadImageModal() {
+    document.getElementById('roadImageModal').style.display = 'flex';}
+
+    function closeRoadImageModal() {
+        console.log("Closing Road Image Modal");
+        // event.stopPropagation();  // Prevents the click event from propagating to other elements
+        document.getElementById('roadImageModal').style.display = 'none';
+    }
+
+    function addPointsToMap(pointsJson, fitBounds, pointType) {
+        var points = JSON.parse(pointsJson);
+        var bounds = L.latLngBounds();
+        points.forEach(function(point) {
+            var pointId = point._id.$oid;
+        var marker = createMarker(point.latitude, point.longitude, pointType, point.road_name, pointId);
+        bounds.extend(marker.getLatLng());
+    });
+    if (fitBounds && points.length > 0) {
+        map.fitBounds(bounds);
+    }
+    }
+
+    {% if shared_points %}
+    addPointsToMap('{{ shared_points|safe }}', false, 'shareable');
+    {% endif %}
+
+    {% if user.is_authenticated and user_points %}
+    addPointsToMap('{{ user_points|safe }}', true, 'user');
+    {% endif %}
+
+
+    var currentPointId = '';
+    function onMarkerClick(pointId, marker, currentRoadName) {
+            clearPreviousSuggestions();
+
+                currentPointId = pointId;
+                console.log ("currentPointId", currentPointId)
+
+            axios.get('/get-weather-data/' + pointId).then(function (response) {
+
+                const data = response.data;
+
+                const imageInfo = data.image_info;
+                var popupContent = `<div style="text-align: center; font-size: 12px;">`; // Center align the content
+                    popupContent += `<h5>${currentRoadName}</h5>`;
+
+                    if (imageInfo.image_base64 && imageInfo.classification !== 'Not available') {
+                        // Format confidence as integer
+                        const confidenceInt = Math.round(imageInfo.confidence);
+
+                        popupContent += `
+                            <img src="data:image/jpeg;base64,${imageInfo.image_base64}" alt="Road Image" style="width:100%;height: auto;">
+                            <p style="text-align: center; font-size: 8px;">Last Update: ${imageInfo.last_update}</p>
+                            <p style="text-align: center; font-size: 10px;">Classification: ${imageInfo.classification} (${confidenceInt}%)</p>
+                        `;
+                    }
+                    popupContent += `</div>`;
+
+                 marker.bindPopup(popupContent).openPopup();
+
+
+
+
+                try {
+                    updateTemperatureChart(data.times, data.temperatures, data.surface_temperatures, data.snow);
+                } catch (error) {
+                    console.error('Error in updateTemperatureChart:', error);
+                }
+                try {
+                    updateNoInterventionChart(data.maintenance_times_Nointrvention, data.water_Nointrvention, data.ice_Nointrvention, data.salt_Nointrvention, data.snow_Nointrvention);
+                } catch (error) {
+                    console.error('Error in updateNoInterventionChart:', error);
+                }
+                try {
+                    updateMaintenanceChart(data.maintenance_times, data.water, data.ice, data.salt, data.snow_withintervention, data.actions_);
+                } catch (error) {
+                    console.error('Error in updateMaintenanceChart:', error);
+                }
+
+                // Update Side Panel
+                document.getElementById('roadName').textContent = currentRoadName.slice(0, 35)  || "No Data";
+                updateAISuggestions(data.maintenance_times, data.actions_);
+                populateWeatherForecastTable(data.times, data.temperatures, data.humidity, data.surface_temperatures,  data.wind_speed, data.weather_description);
+
+                // Show side panel
+                document.getElementById('sidePanel').style.display = 'block';
+
+                // Display traffic info
+                // document.getElementById('trafficInfo').style.display = 'block';
+                document.getElementById('currentSpeed').textContent = data.traffic.current_speed;
+                document.getElementById('maxSpeed').textContent = data.traffic.max_speed;
+                document.getElementById('roadClosure').textContent = data.traffic.road_closure;
+
+            }).catch(function (error) {
+                console.error('Error fetching data:', error);
+            });
+        }
+        function convertToInches(value, density) {
+                // Convert grams per cubic meter to cubic meters (g/m³ to m³) using density (g/m³ / kg/m³ = m³)
+                let volumeM3 = value / 1000 / density;  // Convert to kilograms then to m³
+                let volumeInCubicInches = volumeM3 * 61023.7441;  // Convert cubic meters to cubic inches
+                return volumeInCubicInches / 1440;  // Convert cubic inches to inches over a square meter (1 m² = 1440 in²)
+            }
+        function findMaxY(water, ice, snow, defaultMax) {
+            const allValues = water.concat(ice).concat(snow);
+            const calculatedMax = Math.max(...allValues);
+            return Math.max(calculatedMax, defaultMax);
+        }
+
+        function updateAISuggestions(maintenance_times, actions) {
+                const aiSuggestionContent = document.getElementById('aiSuggestionContent');
+
+                if (!actions || actions.length === 0) {
+                    aiSuggestionContent.innerHTML = "<span>No Snow or ice detected in the next 30 hours! </span>";
+                    return;
+                }
+
+                let suggestions = [];
+                for (let i = 0; i < actions.length; i++) {
+                    if (actions[i].trim() !== '') {
+                        const suggestionHTML = `${maintenance_times[i]} - ${actions[i]}`;
+                        suggestions.push(i === 0 ? `<div class="first-ai-suggestion">${suggestionHTML}</div>` : `<div>${suggestionHTML}</div>`);
+                    }
+                }
+
+                aiSuggestionContent.innerHTML = suggestions.length > 0 ? suggestions.join('') : "<span>No AI Suggestions</span>";
+            }
+        function toggleGraphVisibility() {
+                var containers = document.querySelectorAll('.chart-container');
+                for (var i = 0; i < containers.length; i++) {
+                    // Check if the display property is set; if not, initialize it.
+                    if (containers[i].style.display === '' || containers[i].style.display === 'flex') {
+                        containers[i].style.display = 'none';
+                    } else {
+                        containers[i].style.display = 'flex'; // Make it visible
+                    }
+                }
+            }
+
+
+
+
+
+
+
+        window.onload = function() {
+                var containers = document.querySelectorAll('.chart-container');
+                containers.forEach(function(container) {
+                    container.style.display = 'none'; // Ensure all are hidden initially
+                });
+            };
+        function populateWeatherForecastTable(times, temperatures, humidity, surface_temperatures , wind_speed, weather_description) {
+
+
+            const table = document.getElementById('weatherForecastTable');
+            // Clear existing rows
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            // Calculate the start index to get the last 48 entries
+            const startIndex = Math.max(0, times.length - 30);
+
+            // Populate new rows using a step of 3 hours
+            for (let i = startIndex; i < times.length; i += 3) {
+            // Populate new rows
+                const row = table.insertRow();  // Insert a new row at the end of the table
+
+                // Create a cell for each piece of data and append it to the row
+                const timeCell = row.insertCell();
+                timeCell.textContent = times[i];
+
+                const tempCell = row.insertCell();
+                tempCell.textContent = temperatures[i] ;
+
+                const humidityCell = row.insertCell();
+                humidityCell.textContent = humidity[i] ;
+
+                const surfaceTempCell = row.insertCell();
+                surfaceTempCell.textContent = Math.round(surface_temperatures[i]) ;
+                // console.log("Surface temperature before rounding: ", surface_temperatures[i]);
+                // console.log("Length of surface temperatures array: ", surface_temperatures.length);
+
+
+                const windSpeedCell = row.insertCell();
+                windSpeedCell.textContent = wind_speed[i];
+
+                const descriptionCell = row.insertCell();
+                descriptionCell.textContent = weather_description[i];
+            }
+        }
+
+        function updateTemperatureChart(times, airTemps, surfaceTemps, snow_data) {
+
+            var ctx = document.getElementById('weatherChart').getContext('2d');
+
+            // Check if a chart instance already exists, if it does, destroy it
+            if (window.weatherChart && typeof window.weatherChart.destroy === 'function') {
+                window.weatherChart.destroy();
+            }
+                // Check if a chart instance already exists
+            // Debugging logs
+            // console.log("Times:", times);
+            // console.log("Air Temperatures:", airTemps);
+            // console.log("Surface Temperatures:", surfaceTemps);
+            // console.log("Snow Data:", snow_data);
+
+             window.weatherChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            label: 'Air Temperature',
+
+                            data: airTemps,
+                            borderColor: 'blue',
+                            yAxisID: 'y-axis-1',
+                        }, {
+                            label: 'Surface Temperature',
+                            data: surfaceTemps,
+                            borderColor: 'green',
+                            yAxisID: 'y-axis-1',
+                        }, {
+                            label: 'SnowFall ',
+                            data: snow_data,
+                            borderColor: 'red',
+                            yAxisID: 'y-axis-2',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, // Adjust to false if aspect ratio issues occur
+
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                title:{
+                                    display: true,
+                                    text: 'Weather Information',
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }
+                                },
+                                ticks: {
+                                        font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        }
+                                    }
+                                },
+                            'y-axis-1': {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                        display: true,
+                                        text: 'Temperature (°F)',
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }
+
+                                    },
+                                ticks: {
+                                        font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        }
+                                    }
+                            },
+                            'y-axis-2': {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'SnowFall (inch/hr)',
+                                    font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }
+                                },
+                                grid: {
+                                    drawOnChartArea: false
+                                },
+                                ticks: {
+                                        font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        }
+                                    }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                    labels: {
+                                        font: {
+                                            family: 'Helvetica',
+                                            size: getFontSize(), // Dynamic font size
+                                            style: 'normal',
+
+                                        }
+                                    }
+                                },
+                            annotation: {
+                                annotations: {
+                                    line1: {
+                                        type: 'line',
+                                        mode: 'vertical',
+                                        scaleID: 'x',
+                                        value: times[times.length - 47], // the label at the 48th last index
+                                        borderColor: 'black',
+                                        borderWidth: 1,
+                                        label: {
+                                            content: 'Now',
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            },
+                                            enabled: true,
+                                            position: 'top',
+                                            yAdjust: 60,
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+
+
+        function updateChart(chartInstance) {
+                    chartInstance.options.plugins.legend.labels.font.size = getFontSize();
+                    chartInstance.update();
+                }
+        window.addEventListener('resize', function() {
+            // Check window size and adjust chart size dynamically
+            if (window.innerWidth < 600) {
+                window.weatherChart.options.aspectRatio = 1; // Makes the chart more square
+                window.weatherChart.update();
+            } else {
+                window.weatherChart.options.aspectRatio = 2; // Makes the chart wider
+                window.weatherChart.update();
+            }
+            updateChart(weatherChart);
+            updateChart(noInterventionChart);
+            updateChart(maintenanceChart);
+        });
+
+        var Y_max = 5
+        function updateNoInterventionChart(maintenance_times, water, ice, salt, snow) {
+                var container = document.getElementById('NoInterventionChart');
+                if (maintenance_times.length === 0 || water.length === 0 || ice.length === 0 || salt.length === 0 || snow.length === 0) {
+                    if (window.NoInterventionChart && typeof window.NoInterventionChart.destroy === 'function') {
+                        container.style.display = 'none';
+                        }
+                        // There is no data, so don't attempt to update the chart
+                        console.log('No data for No Intervention Chart');
+                    return;
+                        }
+                var ctxSnow = document.getElementById('NoInterventionChart').getContext('2d');
+                if (window.NoInterventionChart && typeof window.NoInterventionChart.destroy === 'function') {
+                    window.NoInterventionChart.destroy();
+                }
+                var waterInches = water.map(w => convertToInches(w, 1000));
+                var iceInches = ice.map(i => convertToInches(i, 900));
+                var snowInches = snow.map(s => convertToInches(s, 100));
+
+                // Convert inches to centimeters (1 inch = 2.54 cm)
+                var waterCm = waterInches.map(inch => inch * 2.54);
+                var iceCm = iceInches.map(inch => inch * 2.54);
+                var snowCm = snowInches.map(inch => inch * 2.54);
+                // const Mx = 3;
+                // Y_max = Mx
+                var maxY = findMaxY(waterInches, iceInches, snowInches);
+                Y_max = maxY
+                window.NoInterventionChart = new Chart(ctxSnow, {
+                        type: 'line',
+                        data: {
+                            labels: maintenance_times,
+                            datasets: [
+                                { label: 'Water Accumulation', data: waterInches, borderColor: 'aqua', borderWidth: 1, yAxisID: 'y-axis-1' },
+                                { label: 'Ice Accumulation', data: iceInches, borderColor: 'lightblue', borderWidth: 1, yAxisID: 'y-axis-1' },
+                                { label: 'Snow Accumulation', data: snowInches, borderColor: 'red', borderWidth: 1, yAxisID: 'y-axis-1' }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    title:{
+                                        display: true,
+                                        text: 'No Intervention Graph',
+                                        font: {
+                                                    size: getFontSize(), // Dynamic font size
+                                                }
+                                    },
+                                    ticks: {
+                                            font: {
+                                                size: getFontSize(), // Dynamic font size for labels
+                                            }
+                                        }
+                                },
+
+                                'y-axis-1': {
+                                    type: 'linear',
+                                    position: 'left',
+                                    title: {
+                                        display: true,
+                                        text: 'Inches',
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        }
+                                    },
+                                    suggestedMax: maxY
+                                },
+                                'y-axis-2': {
+                                    type: 'linear',
+                                    position: 'right',
+                                    title: {
+                                        display: true,
+                                        text: 'Centimeters',
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }
+                                    },
+                                    suggestedMax: maxY * 2.54,
+                                    grid: {
+                                        drawOnChartArea: false
+                                    },
+
+                                    ticks: {
+                                        font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        },
+                                        callback: function(value, index, values) {
+                                            // Convert and round inches to centimeters
+                                            return (value * 2.54).toFixed(0);
+                                        },
+                                        precision: 0,
+                                        stepSize: 2.54,  // Corresponding to 1 inch increments
+                                        maxTicksLimit: 10  // Align tick limits with the primary axis
+                                    }
+                                }
+                            }
+                        ,
+                    plugins: {
+                            legend: {
+                                    labels: {
+                                        font: {
+                                            family: 'Helvetica',
+                                            size: getFontSize(), // Dynamic font size
+                                            style: 'normal',
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+
+                        }}
+                    });
+            }
+        function updateMaintenanceChart(maintenance_times, water, ice, salt, snow, actions) {
+        if (maintenance_times.length === 0 || water.length === 0 || ice.length === 0 || salt.length === 0 || snow.length === 0) {
+            var container = document.getElementById('maintenanceChart').parentNode;
+            if (window.maintenanceChart && typeof window.maintenanceChart.destroy === 'function') {
+                        container.style.display = 'none';
+                    }
+                // There is no data, so don't attempt to update the chart
+                console.log('No data for No MaintenanceChart Chart');
+                return;}
+            var ctxMnt = document.getElementById('maintenanceChart').getContext('2d');
+            if (window.maintenanceChart && typeof window.maintenanceChart.destroy === 'function') {
+                    window.maintenanceChart.destroy();
+                }
+            var waterInches = water.map(w => convertToInches(w, 1000));
+            var iceInches = ice.map(i => convertToInches(i, 900));
+            var snowInches = snow.map(s => convertToInches(s, 100));
+            const Mx = Y_max;
+            var maxY = findMaxY(waterInches, iceInches, snowInches, Mx);
+            var annotations = actions.map((action, index) => {
+                if (action !== '') {
+                    return {
+                        type: 'line',
+                        mode: 'vertical',
+                        scaleID: 'x',
+                        value: maintenance_times[index],
+                        borderColor: 'black',
+                        borderWidth: 2,
+
+                        label: {
+                            enabled: true,
+                            content: action,
+                            position: 'top',
+                            rotation :90,
+                            font: {
+                                size: 10, // Set the font size here
+                                family: 'Arial', // Optional: set the font family
+                                style: 'normal', // Optional: set the font style
+                                weight: 'bold', // Optional: set the font weight
+
+                            },
+                        }
+                    };
+                }
+            }).filter(annotation => annotation != null);
+
+            window.maintenanceChart = new Chart(ctxMnt, {
+                type: 'line',
+                data: {
+                    labels: maintenance_times,
+                    datasets: [
+                        { label: 'Water Accumulation', data: waterInches, borderColor: 'aqua', borderWidth: 1 },
+                        { label: 'Ice Accumulation', data: iceInches, borderColor: 'lightblue', borderWidth: 1 },
+                        { label: 'Salt Accumulation', data: salt, borderColor: 'yellow', borderWidth: 1, yAxisID: 'y1' },
+                        { label: 'Snow Accumulation', data: snowInches, borderColor: 'red', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                                beginAtZero: true,
+                                title:{
+                                    display: true,
+                                    text: 'Maintenance Graph',
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }
+                                },
+                                ticks: {
+                                        font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        }
+                                    }
+                                },
+                        y: { beginAtZero: true, title: { display: true, text: 'Inches' ,
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }}, suggestedMax: maxY,ticks: {font: {
+                                                                    size: getFontSize(), // Dynamic font size for labels
+                                            }},
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }},
+                        y1: { type: 'linear', position: 'right', title: { display: true, text: 'Salt lb/mile/lane' ,
+                                        font: {
+                                                size: getFontSize(), // Dynamic font size
+                                            }} , ticks: {min: 0 ,
+                            font: {
+                                            size: getFontSize(), // Dynamic font size for labels
+                                        }}}
+                    },
+                    plugins: {
+                        legend: {
+                                    labels: {
+                                        font: {
+                                            family: 'Helvetica',
+                                            size: getFontSize(), // Dynamic font size
+                                            style: 'normal',
+                                            weight: 'bold'
+                                        }
+                                    }
+                                },
+                        annotation: {
+                            annotations: annotations
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // Get the modal
+
+    function closeSuggestionModal(event) {
+        console.log("Closing Suggestion Modal");
+        event.stopPropagation();  // Prevents the click event from propagating to other elements
+        document.getElementById('myModal').style.display = 'none';
+    }
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById("myModal");
+    var addButton = document.getElementById("addButton");
+    var span = document.getElementsByClassName("close")[0];
+    var cancelButton = document.getElementById("cancelButton");
+    var submitButton = document.getElementById("submitButton");
+    var form = document.getElementById("maintenanceForm");
+    var userSelectionContainer = document.getElementById("userSelection");
+
+    addButton.onclick = function() {
+        modal.style.display = "block";
+    };
+
+    // span.onclick = function() {
+    //     modal.style.display = "none";
+    // };
+
+    // cancelButton.onclick = function() {
+    //     modal.style.display = "none";
+    // };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+
+    form.onsubmit = function(event) {
+                event.preventDefault(); // Prevent the default form submission
+                if (!currentPointId) {
+                    alert("No point selected!");
+                    return false; // Prevent form submission
+                }
+
+                document.getElementById('pointIdField').value = currentPointId;
+                form.action = '/submit_suggestion/' + currentPointId + '/';
+
+                // Get values from the form to update the UI
+                var date = form.querySelector("#date").value;
+                var time = form.querySelector("#time").value;
+                var type = form.querySelector("#type").value;
+                var userSuggestionText = form.querySelector("[name='userSuggestion']").value;
+
+                // Create and display the new suggestion immediately
+                var newSelection = document.createElement('div');
+                newSelection.classList.add('user-selection');
+                newSelection.textContent = `Date: ${date}, Time: ${time}, Type: ${type}, Suggestion: ${userSuggestionText}`;
+                userSelectionContainer.appendChild(newSelection);
+
+                var formData = new FormData(form);
+                var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        "X-CSRFToken": csrftoken
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Suggestion logged successfully!');
+                        form.reset(); // Reset the form fields after successful submission
+                        modal.style.display = "none"; // Close the modal
+                    } else if (response.status === 404) {
+                        alert('Data not found for the provided point ID');
+                        userSelectionContainer.removeChild(newSelection); // Remove the suggestion if not successful
+                    } else {
+                        alert('Error logging suggestion');
+                        userSelectionContainer.removeChild(newSelection); // Remove the suggestion if not successful
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    userSelectionContainer.removeChild(newSelection); // Remove the suggestion if error occurs
+                });
+            };
+
+
+
+});
+
+//
+
+        function clearPreviousSuggestions() {
+            var userSelection = document.getElementById('userSelection');
+            if (userSelection) {
+                userSelection.innerHTML = '';
+            }
+                }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% include "web_smartmdss/_navbar.html" %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% url 'Michigan_home' as michigan_home_url %}
+    <input type="hidden" name="next" value="{{ request.GET.next|default:michigan_home_url }}">
+    <button type="submit">Login</button>
+</form>
+{% endblock %}

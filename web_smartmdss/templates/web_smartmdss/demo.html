@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Demo Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2"></script>
+
+    <style>
+        .chart-container {
+            width: 30%;  /* Adjust the width as needed */
+            margin: auto;
+        }
+        canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
+    </style>
+</head>
+<body>
+{% include 'web_smartmdss/_navbar.html' %}
+    <h1>Demo of Weather Data Visualization</h1>
+
+    <div class="chart-container">
+        <!-- Temperature Graph Container -->
+        <canvas id="temperatureChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <!-- Snow Graph Container -->
+        <canvas id="NoInterventionChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <!-- Maintenance Graph Container -->
+        <canvas id="maintenanceChart"></canvas>
+    </div>
+
+    <script>
+        // Function to fetch data and update charts
+        function fetchDataAndUpdateCharts() {
+            axios.get('/demo-data/').then(function (response) {
+                const data = response.data;
+                updateTemperatureChart(data.times, data.air_temps, data.surface_temps, data.snow_data);
+                updateNoInterventionChart(data.maintenance_times_Nointrvention, data.water_Nointrvention, data.ice_Nointrvention, data.salt_Nointrvention, data.snow_Nointrvention);
+                updateMaintenanceChart(data.maintenance_times, data.water, data.ice, data.salt, data.snow, data.actions);
+            }).catch(function (error) {
+                console.error('Error fetching data:', error);
+            });
+        }
+
+
+
+        function updateTemperatureChart(times, airTemps, surfaceTemps, snow_data) {
+            var ctxTemp = document.getElementById('temperatureChart').getContext('2d');
+            var temperatureChart = new Chart(ctxTemp, {
+                type: 'line',
+                data: {
+                    labels: times,
+                    datasets: [{
+                        label: 'Air Temperature (F)',
+                        data: airTemps,
+                        borderColor: 'red',
+                        borderWidth: 1
+                    }, {
+                        label: 'Surface Temperature (F)',
+                        data: surfaceTemps,
+                        borderColor: 'blue',
+                        borderWidth: 1
+                    }, {
+                        label: 'Snow (inch)',
+                        data: snow_data,
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        yAxisID: 'y1'
+                    }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: {                            beginAtZero: false,                        },
+                         y1: { type: 'linear', position: 'right', title: { display: true, text: 'inche/hour' } }
+                }
+                }});}
+
+        function convertToInches(value, density) {
+                // Convert grams per cubic meter to cubic meters (g/m³ to m³) using density (g/m³ / kg/m³ = m³)
+                let volumeM3 = value / 1000 / density;  // Convert to kilograms then to m³
+                let volumeInCubicInches = volumeM3 * 61023.7441;  // Convert cubic meters to cubic inches
+                return volumeInCubicInches / 1440;  // Convert cubic inches to inches over a square meter (1 m² = 1440 in²)
+            }
+        function findMaxY(water, ice, snow, defaultMax) {
+                const allValues = water.concat(ice).concat(snow);
+                const calculatedMax = Math.max(...allValues);
+                return Math.max(calculatedMax, defaultMax);
+            }
+        function updateNoInterventionChart(maintenance_times, water, ice, salt, snow) {
+                var ctxSnow = document.getElementById('NoInterventionChart').getContext('2d');
+                var waterInches = water.map(w => convertToInches(w, 1000));
+                var iceInches = ice.map(i => convertToInches(i, 900));
+                var snowInches = snow.map(s => convertToInches(s, 100));
+                const Mx = 10;
+                var maxY = findMaxY(waterInches, iceInches, snowInches, Mx);
+                var NoInterventionChart = new Chart(ctxSnow, {
+                    type: 'line',
+                    data: {
+                        labels: maintenance_times,
+                        datasets: [
+                            { label: 'Water (inches)', data: waterInches, borderColor: 'aqua', borderWidth: 1 },
+                            { label: 'Ice (inches)', data: iceInches, borderColor: 'lightblue', borderWidth: 1 },
+                            { label: 'Snow (inches)', data: snowInches, borderColor: 'red', borderWidth: 1 }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {  title: { display: true, text: 'Inches' }, suggestedMax: maxY  },
+
+                        }
+                    }
+                });
+            }
+
+        function updateMaintenanceChart(maintenance_times, water, ice, salt, snow, actions) {
+            var ctxMnt = document.getElementById('maintenanceChart').getContext('2d');
+            var waterInches = water.map(w => convertToInches(w, 1000));
+            var iceInches = ice.map(i => convertToInches(i, 900));
+            var snowInches = snow.map(s => convertToInches(s, 100));
+            const Mx = 10;
+            var maxY = findMaxY(waterInches, iceInches, snowInches, Mx);
+            var annotations = actions.map((action, index) => {
+                if (action !== '') {
+                    return {
+                        type: 'line',
+                        mode: 'vertical',
+                        scaleID: 'x',
+                        value: maintenance_times[index],
+                        borderColor: 'black',
+                        borderWidth: 2,
+                        label: {
+                            enabled: true,
+                            content: action,
+                            position: 'top'
+                        }
+                    };
+                }
+            }).filter(annotation => annotation != null);
+
+            var maintenanceChart = new Chart(ctxMnt, {
+                type: 'line',
+                data: {
+                    labels: maintenance_times,
+                    datasets: [
+                        { label: 'Water (inches)', data: waterInches, borderColor: 'aqua', borderWidth: 1 },
+                        { label: 'Ice (inches)', data: iceInches, borderColor: 'lightblue', borderWidth: 1 },
+                        { label: 'Salt (lb/mile/lane)', data: salt, borderColor: 'yellow', borderWidth: 1, yAxisID: 'y1' },
+                        { label: 'Snow (inches)', data: snowInches, borderColor: 'red', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Inches' }, suggestedMax: maxY , },
+                        y1: { type: 'linear', position: 'right', title: { display: true, text: 'Salt lb/mile/lane' } }
+                    },
+                    plugins: {
+                        annotation: {
+                            annotations: annotations
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initial fetch and render
+        fetchDataAndUpdateCharts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5e38d926-ace3-4c8b-8995-f021cbfd471a" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/SmartMDSS.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Smartmdss/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Smartmdss/asgi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Smartmdss/mongo_setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Smartmdss/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Smartmdss/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Smartmdss/wsgi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/manage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/testMongo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/CNN/Upgrade ML.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Create_data_for_test_winter.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Decision_making_DRL_for_demo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Decision_making_DRL_for_homepage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan/Add_state_to_current_points.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan/Check_VPN_MDOT.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan/Create_database_for_Michigan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Scrape_image_Michigan.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/TestTraffic.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/Weather_API_Scraping.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/XGBoost_surface_prediction.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/test_winter.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/BackEnd/xgboost_model.pkl" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/Check_database_eng.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/old_vies.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/static/Road_img/Houghton.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/static/js/ Chart.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/Backup_Michigan_home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/Michigan_home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/Mobile_Michigan_home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/_navbar.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/area_of_interest.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/demo.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/home.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/templates/web_smartmdss/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web_smartmdss/views.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2ey3K8TEXXzz1oIc6p9cDK5e4dv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Python.Add_state_to_current_points.executor": "Run",
+    "Python.Check_VPN_MDOT.executor": "Run",
+    "Python.Check_database_eng.executor": "Run",
+    "Python.Create_data_for_test_winter.executor": "Run",
+    "Python.Create_database_for_Michigan.executor": "Run",
+    "Python.Decision_making_DRL.executor": "Run",
+    "Python.Decision_making_DRL_for_homepage.executor": "Run",
+    "Python.Scrape_image_Michigan (1).executor": "Run",
+    "Python.Scrape_image_Michigan.executor": "Run",
+    "Python.Termeh.executor": "Run",
+    "Python.TestTraffic (1).executor": "Run",
+    "Python.TestTraffic.executor": "Run",
+    "Python.Test_weather.executor": "Run",
+    "Python.Upgrade ML.executor": "Run",
+    "Python.Weather_API_Scraping (1).executor": "Run",
+    "Python.Weather_API_Scraping.executor": "Run",
+    "Python.XGBoost_surface_prediction.executor": "Run",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/zmx5fy/SmartMDSS/web_smartmdss/BackEnd",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.general",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\BackEnd" />
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\Test_APIs" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\BackEnd\CNN" />
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\BackEnd" />
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\static\Road_img" />
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\BackEnd\Michigan\chromedrive" />
+      <recent name="C:\Users\zmx5fy\SmartMDSS\web_smartmdss\BackEnd\DRL_models_soph" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.Check_VPN_MDOT">
+    <configuration name="Check_VPN_MDOT" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartMDSS" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan/Check_VPN_MDOT.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Scrape_image_Michigan" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartMDSS" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_smartmdss/BackEnd/Scrape_image_Michigan.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Termeh" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartMDSS" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_smartmdss/BackEnd/Termeh.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Upgrade ML" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartMDSS" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_smartmdss/BackEnd/CNN" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_smartmdss/BackEnd/CNN/Upgrade ML.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Weather_API_Scraping (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartMDSS" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/web_smartmdss/BackEnd/Weather_API_Scraping.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.Check_VPN_MDOT" />
+        <item itemvalue="Python.Termeh" />
+        <item itemvalue="Python.Weather_API_Scraping (1)" />
+        <item itemvalue="Python.Scrape_image_Michigan" />
+        <item itemvalue="Python.Upgrade ML" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-50da183f06c8-2887949eec09-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-233.13135.95" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5e38d926-ace3-4c8b-8995-f021cbfd471a" name="Changes" comment="" />
+      <created>1712862923791</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1712862923791</updated>
+      <workItem from="1712862958879" duration="18000" />
+      <workItem from="1712862997109" duration="248321000" />
+      <workItem from="1714653358287" duration="634000" />
+      <workItem from="1715026930982" duration="14550000" />
+      <workItem from="1715257114413" duration="47757000" />
+      <workItem from="1716136159856" duration="617000" />
+      <workItem from="1716408777627" duration="3158000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Smartmdss$main.coverage" NAME="main Coverage Results" MODIFIED="1713992537468" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Scrape_image_Michigan__1_.coverage" NAME="Scrape_image_Michigan (1) Coverage Results" MODIFIED="1715200316320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$TestTraffic.coverage" NAME="TestTraffic Coverage Results" MODIFIED="1714311555324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Weather_API_Scraping__1_.coverage" NAME="Weather_API_Scraping (1) Coverage Results" MODIFIED="1715525221240" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Termeh.coverage" NAME="Termeh Coverage Results" MODIFIED="1716040279650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Scrape_image_Michigan.coverage" NAME="Scrape_image_Michigan Coverage Results" MODIFIED="1715374844046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Test_weather.coverage" NAME="Weather_API_Scraping Coverage Results" MODIFIED="1713193588612" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/Test_APIs" />
+    <SUITE FILE_PATH="coverage/Smartmdss$TestTraffic__1_.coverage" NAME="TestTraffic (1) Coverage Results" MODIFIED="1713200038151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Weather_API_Scraping.coverage" NAME="Weather_API_Scraping Coverage Results" MODIFIED="1713995720630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Upgrade_ML.coverage" NAME="Upgrade ML Coverage Results" MODIFIED="1715261284199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd/CNN" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Check_VPN_MDOT.coverage" NAME="Check_VPN_MDOT Coverage Results" MODIFIED="1716409780568" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Add_state_to_current_points.coverage" NAME="Add_state_to_current_points Coverage Results" MODIFIED="1713537150351" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan" />
+    <SUITE FILE_PATH="coverage/Smartmdss$XGBoost_surface_prediction.coverage" NAME="XGBoost_surface_prediction Coverage Results" MODIFIED="1713201886144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Check_database_eng.coverage" NAME="Check_database_eng Coverage Results" MODIFIED="1712926936123" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Decision_making_DRL.coverage" NAME="Decision_making_DRL Coverage Results" MODIFIED="1713299800673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Create_database_for_Michigan.coverage" NAME="Create_database_for_Michigan Coverage Results" MODIFIED="1713445815082" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd/Michigan" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Decision_making_DRL_for_homepage.coverage" NAME="Decision_making_DRL_for_homepage Coverage Results" MODIFIED="1713387751439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+    <SUITE FILE_PATH="coverage/Smartmdss$Create_data_for_test_winter.coverage" NAME="Create_data_for_test_winter Coverage Results" MODIFIED="1713363281492" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/web_smartmdss/BackEnd" />
+  </component>
+</project>

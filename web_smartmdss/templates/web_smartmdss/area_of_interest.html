@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Area of Interest</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .navbar, .content, table, form {
+            max-width: 900px;
+            margin: auto;
+        }
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .content h2 {
+            color: #333;
+        }
+        form {
+            background-color: transparent !important;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        div, table.form-table {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block; /* Makes label align with inline elements like text */
+            vertical-align: middle; /* Aligns the text in the middle with checkbox */
+            margin-left: 5px; /* Adds space between checkbox and label text */
+        }
+        /* Ensuring consistent box-sizing */
+        input[type="checkbox"], label {
+            box-sizing: border-box;
+        }
+
+        /* Aligning label text with the checkbox */
+        input[type="checkbox"] {
+            vertical-align: middle;
+            margin: 0; /* Adjust margin as needed */
+            top: -1px;
+
+        }
+
+
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        .form-text {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .note {
+            font-size: 0.9rem;
+            color: #333;
+        }
+        #mapid {
+            height: 300px;
+            width: 70%;
+            margin-bottom: 20px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    {% include 'web_smartmdss/_navbar.html' %}
+
+    <div class="content">
+        {% block content %}
+            <h2>Your Area of Interest</h2>
+            <form method="post">
+                {% csrf_token %}
+                <table class="form-table" style="width:100%">
+                    {% for field in form %}
+                        {% if field.name == 'latitude' or field.name == 'longitude' %}
+                            <tr>
+                                <td>
+                                    {{ field.errors }}
+                                    {{ field.label_tag }} {{ field }}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    <tr>
+                        <td>
+                            <div id="mapid"></div> <!-- Map container now placed in a table row -->
+                        </td>
+                    </tr>
+                    {% for field in form %}
+                        {% if field.name != 'latitude' and field.name != 'longitude' %}
+                            <tr>
+                                <td>
+                                    {{ field.errors }}
+                                    {{ field.label_tag }} {{ field }}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+                <h5 class="note">* Note: No personal or imported data will be shared with other users.</h5>
+                <button type="submit">Add</button>
+            </form>
+
+            <table>
+                <!-- Existing data display table -->
+                <tr>
+                    <th>Name</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Road Type</th>
+                    <th>Winter Maintenance</th>
+                    <th>Plowing Per Day</th>
+                    <th>Salting Per Day</th>
+                    <th>Salt Type</th>
+                    <th>Actions</th>
+                </tr>
+                {% for point in points %}
+                <tr>
+                     <td>{{ point.road_name }}</td>
+                    <td>{{ point.latitude }}</td>
+                    <td>{{ point.longitude }}</td>
+                    <td>{{ point.road_type }}</td>
+                    <td>{{ point.winter_maintenance }}</td>
+                    <td>{{ point.plowing_per_day }}</td>
+                    <td>{{ point.salting_per_day }}</td>
+                    <td>{{ point.salt_type }}</td>
+                    <td>
+                        <form action="{% url 'delete_point' point.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            <a href="{% url 'home' %}"><button>Return to Home Page</button></a>
+
+            <script>
+                var mymap = L.map('mapid').setView([47.5515, -101.0020], 5);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(mymap);
+
+                var marker = null; // Initialize marker variable
+
+                function onMapClick(e) {
+                    var lat = e.latlng.lat.toFixed(6);
+                    var lon = e.latlng.lng.toFixed(6);
+                    document.querySelector("[name='latitude']").value = lat;
+                    document.querySelector("[name='longitude']").value = lon;
+
+                    if (marker) {
+                        // Move the existing marker
+                        marker.setLatLng(e.latlng);
+                    } else {
+                        // Create a new marker
+                        marker = L.marker(e.latlng).addTo(mymap);
+                    }
+                }
+
+                mymap.on('click', onMapClick);
+            </script>
+        {% endblock %}
+    </div>
+</body>
+</html>
